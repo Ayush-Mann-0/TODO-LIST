@@ -37,7 +37,7 @@ User.hasMany(Task);
 Task.belongsTo(User);
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000; // Use PORT environment variable or default to 3000
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -140,6 +140,6 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Server is running on http://0.0.0.0:${port}`);
 });
