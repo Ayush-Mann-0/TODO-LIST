@@ -41,9 +41,14 @@ document.getElementById('login-form').addEventListener('submit', (event) => {
             document.getElementById('auth-section').style.display = 'none';
             document.getElementById('todo-container').style.display = 'block';
             loadTodos();
-        } else {
+            // Show success message on UI
+            const successMessage = document.createElement('p');
+            successMessage.textContent = 'Login successful!';
+            loginForm.appendChild(successMessage);
+            setTimeout(() => successMessage.remove(), 2000); // Remove message after 2 seconds
+          } else {
             alert(data.message);
-        }
+          }
     })
     .catch(error => {
         console.error('Error:', error);
