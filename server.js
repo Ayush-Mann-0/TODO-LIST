@@ -68,16 +68,18 @@ app.post('/register', async (req, res) => {
         // Check if the username already exists
         const existingUser = await User.findOne({ where: { username } });
         if (existingUser) {
-            return res.status(400).send('Username already registered');
+            return res.status(409).json({ message: 'Username already registered' });
         }
+
         const hashedPassword = await bcrypt.hash(password, 10);
         const newUser = await User.create({ username, password: hashedPassword });
         req.session.userId = newUser.id;
-        res.status(201).send('User registered');
+        res.status(201).json({ message: 'User registered successfully' });
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).json({ message: err.message });
     }
 });
+
 
 // User login endpoint
 app.post('/login', async (req, res) => {
