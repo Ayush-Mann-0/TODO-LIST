@@ -1,6 +1,6 @@
 let currentUser = '';
 
-document.getElementById('register-form').addEventListener('submit', (event) => {
+document.getElementById('registerForm').addEventListener('submit', (event) => {
     event.preventDefault();
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
@@ -14,7 +14,12 @@ document.getElementById('register-form').addEventListener('submit', (event) => {
     })
     .then(response => response.json())
     .then(data => {
-        alert(data.message);
+        alert(data.message); // Display the registration message from the server
+        if (data.message === 'User registered successfully') {
+            // Optionally, handle successful registration (e.g., show success message)
+            document.getElementById('message').textContent = 'Registration successful!';
+            document.getElementById('message').style.color = '#4CAF50';
+        }
     })
     .catch(error => {
         console.error('Error:', error);
@@ -22,10 +27,10 @@ document.getElementById('register-form').addEventListener('submit', (event) => {
     });
 });
 
-document.getElementById('login-form').addEventListener('submit', (event) => {
+document.getElementById('loginForm').addEventListener('submit', (event) => {
     event.preventDefault();
-    const username = document.getElementById('login-username').value;
-    const password = document.getElementById('login-password').value;
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
     
     fetch('/login', {
         method: 'POST',
@@ -36,19 +41,13 @@ document.getElementById('login-form').addEventListener('submit', (event) => {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.success) {
+        alert(data.message); // Display the login message from the server
+        if (data.message === 'Login successful') {
             currentUser = username;
-            document.getElementById('auth-section').style.display = 'none';
-            document.getElementById('todo-container').style.display = 'block';
-            loadTodos();
-            // Show success message on UI
-            const successMessage = document.createElement('p');
-            successMessage.textContent = 'Login successful!';
-            loginForm.appendChild(successMessage);
-            setTimeout(() => successMessage.remove(), 2000); // Remove message after 2 seconds
-          } else {
-            alert(data.message);
-          }
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('todoContainer').style.display = 'block';
+            loadTodos(); // Load todos for the logged-in user
+        }
     })
     .catch(error => {
         console.error('Error:', error);
@@ -56,25 +55,28 @@ document.getElementById('login-form').addEventListener('submit', (event) => {
     });
 });
 
-document.getElementById('add-todo').addEventListener('click', () => {
-    const todoInput = document.getElementById('todo-input');
+document.getElementById('logout').addEventListener('click', () => {
+    currentUser = '';
+    document.getElementById('authSection').style.display = 'block';
+    document.getElementById('todoContainer').style.display = 'none';
+    document.getElementById('todoList').innerHTML = ''; // Clear TODO list
+});
+
+document.getElementById('addTodo').addEventListener('click', () => {
+    const todoInput = document.getElementById('todoInput');
     const todoText = todoInput.value;
 
-    fetch('/todos', {
+    fetch('/tasks', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ username: currentUser, todo: todoText })
+        body: JSON.stringify({ title: todoText })
     })
     .then(response => response.json())
     .then(data => {
-        if (data.success) {
-            addTodoToList(todoText);
-            todoInput.value = '';
-        } else {
-            alert('Failed to add TODO');
-        }
+        addTodoToList(todoText); // Add todo to UI
+        todoInput.value = ''; // Clear input field
     })
     .catch(error => {
         console.error('Error:', error);
@@ -82,29 +84,18 @@ document.getElementById('add-todo').addEventListener('click', () => {
     });
 });
 
-document.getElementById('logout').addEventListener('click', () => {
-    currentUser = '';
-    document.getElementById('auth-section').style.display = 'block';
-    document.getElementById('todo-container').style.display = 'none';
-    document.getElementById('todo-list').innerHTML = ''; // Clear TODO list
-});
-
 function addTodoToList(todoText) {
-    const todoList = document.getElementById('todo-list');
+    const todoList = document.getElementById('todoList');
     const li = document.createElement('li');
     li.textContent = todoText;
     todoList.appendChild(li);
 }
 
 function loadTodos() {
-    fetch(`/todos?username=${currentUser}`)
+    fetch('/tasks')
     .then(response => response.json())
     .then(data => {
-        if (data.success) {
-            data.todos.forEach(todo => addTodoToList(todo.todo));
-        } else {
-            alert('Failed to load TODOs');
-        }
+        data.forEach(todo => addTodoToList(todo.title)); // Add each todo to UI
     })
     .catch(error => {
         console.error('Error:', error);

@@ -1,44 +1,238 @@
+/* Reset and General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    font-family: 'Arial', sans-serif;
+    background: url('background.png') no-repeat center center fixed;
+    background-size: cover;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    margin: 0;
+    color: #f0f0f0;
+    background-color: #121212; /* Fallback color */
 }
 
 .container {
+    background: rgba(0, 0, 0, 0.8); /* Transparent black background */
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+    padding: 40px;
     text-align: center;
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px; /* Increased max-width for larger screens */
+    width: 90%; /* Responsive width */
+    margin: 20px auto; /* Center the container */
+    transition: background-color 0.3s; /* Smooth background color transition */
+}
+
+.container:hover {
+    background-color: rgba(0, 0, 0, 0.9); /* Darken background on hover */
 }
 
 h1 {
-    margin-bottom: 10px;
+    color: #f0f0f0;
+    margin-bottom: 20px;
+    font-size: 2.5em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    transition: color 0.3s; /* Smooth text color transition */
 }
 
-p {
+.task-input-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: 20px;
 }
 
-.buttons {
+.task-input-container input[type="text"] {
+    flex: 1; /* Take remaining space */
+    padding: 12px;
+    border: 2px solid #444;
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.4); /* Transparent black */
+    color: #f0f0f0;
+    font-size: 1em;
+    transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.task-input-container input[type="text"]:focus {
+    background-color: rgba(0, 0, 0, 0.6); /* Darker on focus */
+    border-color: #007BFF; /* Accent color */
+}
+
+ul#taskList {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul#taskList li {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 15px;
     display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-.btn {
-    text-decoration: none;
-    color: #fff;
-    background-color: #007bff;
-    padding: 10px 20px;
-    border-radius: 5px;
+    flex-direction: column; /* Ensure items stack vertically */
+    align-items: flex-start; /* Align items to the start */
+    justify-content: space-between; /* Space between title and buttons */
     transition: background-color 0.3s;
+    word-wrap: break-word; /* Wrap long words */
+    overflow-wrap: break-word; /* Better support for word breaking */
 }
 
-.btn:hover {
+ul#taskList li:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Lighten on hover */
+}
+
+ul#taskList li p {
+    margin-top: 8px; /* Add spacing between title and description */
+}
+
+ul#taskList li button {
+    background-color: #ff4d4d;
+    color: #f0f0f0;
+    border: none;
+    border-radius: 6px;
+    padding: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+ul#taskList li button:hover {
+    background-color: #ff1a1a;
+}
+
+ul#taskList li button img {
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+}
+
+ul#taskList li button.delete-btn {
+    background-color: #ff4d4d; /* Red */
+}
+
+ul#taskList li button.delete-btn:hover {
+    background-color: #ff1a1a; /* Darker red on hover */
+}
+
+ul#taskList li button.complete-btn {
+    background-color: #007BFF; /* Blue */
+}
+
+ul#taskList li button.complete-btn:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+ul#taskList li button.complete-btn.completed {
+    background-color: #28a745; /* Green for completed tasks */
+}
+
+ul#taskList li button.complete-btn.completed:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+/* Effects and Animations */
+.task-input-container button,
+.button,
+.button.secondary,
+button.logout-btn {
+    transition: background-color 0.3s, color 0.3s, transform 0.2s ease-out, box-shadow 0.3s;
+}
+
+.task-input-container button:hover,
+.button:hover,
+.button.secondary:hover,
+button.logout-btn:hover {
     background-color: #0056b3;
+    transform: scale(1.05); /* Enlarge on hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Increase shadow on hover */
+}
+
+.button.secondary {
+    background-color: transparent;
+    border: 2px solid #007BFF;
+    color: #007BFF;
+}
+
+.button.secondary:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+    color: #0056b3;
+    transform: scale(1.05); /* Enlarge on hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Increase shadow on hover */
+}
+
+/* Form and Input Styles */
+.form-group {
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    color: #f0f0f0;
+    font-size: 1.1em;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="text"]#taskInput {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #444;
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.4); /* Transparent black */
+    color: #f0f0f0;
+    font-size: 1em;
+    transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="text"]#taskInput:focus {
+    outline: none;
+    background-color: rgba(0, 0, 0, 0.6); /* Darker on focus */
+    border-color: #007BFF; /* Accent color */
+}
+
+/* Error message styles */
+.error {
+    color: #ff4d4d;
+    font-size: 0.9em;
+    display: none;
+}
+
+/* Button Styles */
+.task-input-container button,
+.button,
+.button.secondary,
+button.logout-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    line-height: 1;
+    margin: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Add subtle shadow */
+}
+
+.task-input-container button,
+.button,
+button.logout-btn {
+    background-color: #007BFF;
+    color: #f0f0f0;
+}
+
+.button.secondary {
+    background-color: transparent;
+    border: 2px solid #007BFF;
+    color: #007BFF;
 }
