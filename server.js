@@ -7,7 +7,7 @@ const path = require('path');
 const cors = require('cors');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000; // Use PORT environment variable or default to 3000
 
 app.use(cors());
 
@@ -40,6 +40,10 @@ const Task = sequelize.define('Task', {
         defaultValue: false
     }
 });
+
+// Establish relationships
+User.hasMany(Task);
+Task.belongsTo(User);
 
 
 // Middleware setup
@@ -177,7 +181,6 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Start server
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Server is running on http://0.0.0.0:${port}`);
 });
