@@ -45,7 +45,6 @@ const Task = sequelize.define('Task', {
 User.hasMany(Task);
 Task.belongsTo(User);
 
-
 // Middleware setup
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -64,6 +63,15 @@ sequelize.sync()
         console.error('Error syncing database:', err);
     });
 
+// Middleware to check if a user is logged in
+function isAuthenticated(req, res, next) {
+    if (req.session.userId) {
+        return next();
+    } else {
+        res.status(401).json({ message: 'Unauthorized' });
+    }
+}
+
 // User registration endpoint
 app.post('/register', async (req, res) => {
     const { username, password } = req.body;
@@ -77,13 +85,13 @@ app.post('/register', async (req, res) => {
 
         // Hash the password before saving it
         const hashedPassword = await bcrypt.hash(password, 10);
-        
+
         // Create a new user in the database
         const newUser = await User.create({ username, password: hashedPassword });
-        
+
         // Optionally, you can set up session handling or other responses here
         req.session.userId = newUser.id;
-        
+
         // Respond with success message
         res.status(201).json({ message: 'User registered successfully' });
     } catch (err) {
@@ -115,9 +123,10 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.get('/tasks', async (req, res) => {
+// Get tasks for the logged-in user
+app.get('/tasks', isAuthenticated, async (req, res) => {
     try {
-        const tasks = await Task.findAll();
+        const tasks = await Task.findAll({ where: { UserId: req.session.userId } });
         res.status(200).json(tasks);
     } catch (err) {
         console.error('Error fetching tasks:', err);
@@ -125,11 +134,12 @@ app.get('/tasks', async (req, res) => {
     }
 });
 
-app.post('/tasks', async (req, res) => {
+// Create a new task for the logged-in user
+app.post('/tasks', isAuthenticated, async (req, res) => {
     const { title } = req.body;
 
     try {
-        const newTask = await Task.create({ title });
+        const newTask = await Task.create({ title, UserId: req.session.userId });
         res.status(201).json(newTask);
     } catch (err) {
         console.error('Error creating task:', err);
@@ -137,13 +147,12 @@ app.post('/tasks', async (req, res) => {
     }
 });
 
-
-
-app.post('/tasks/:id/complete', async (req, res) => {
+// Toggle task completion status
+app.post('/tasks/:id/complete', isAuthenticated, async (req, res) => {
     const { id } = req.params;
 
     try {
-        const task = await Task.findByPk(id);
+        const task = await Task.findOne({ where: { id, UserId: req.session.userId } });
         if (!task) {
             return res.status(404).json({ message: 'Task not found' });
         }
@@ -156,11 +165,12 @@ app.post('/tasks/:id/complete', async (req, res) => {
     }
 });
 
-app.delete('/tasks/:id', async (req, res) => {
+// Delete a task
+app.delete('/tasks/:id', isAuthenticated, async (req, res) => {
     const { id } = req.params;
 
     try {
-        const task = await Task.findByPk(id);
+        const task = await Task.findOne({ where: { id, UserId: req.session.userId } });
         if (!task) {
             return res.status(404).json({ message: 'Task not found' });
         }
@@ -171,7 +181,6 @@ app.delete('/tasks/:id', async (req, res) => {
         res.status(500).json({ message: 'Failed to delete task' });
     }
 });
-
 
 // Serve static files (e.g., index.html, styles.css) from the root directory
 app.use(express.static(path.join(__dirname)));

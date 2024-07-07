@@ -82,9 +82,10 @@ function renderTasks() {
 
         let deleteButton = document.createElement('button');
         deleteButton.style.height = '30px';
-        deleteButton.style.marginLeft = '5px';
+        deleteButton.style.marginLeft = 'auto';
         deleteButton.style.display = 'flex'; // Ensure flexbox is used for centering
         deleteButton.style.alignItems = 'center'; // Center align items vertically
+        deleteButton.style.justifyContent = 'center'; // Center align items horizontally
 
         let deleteImage = document.createElement('img');
         deleteImage.src = 'delete.png'; // Replace with your image source
@@ -96,6 +97,7 @@ function renderTasks() {
 
         buttonContainer.appendChild(completeButton);
         buttonContainer.appendChild(deleteButton);
+
         
         li.appendChild(buttonContainer);
         taskList.appendChild(li);

@@ -1,2 +1,3 @@
-database.sqlite
 backup
+node_modules
+.vscode
