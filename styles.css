@@ -26,12 +26,37 @@ body {
     max-width: 600px; /* Increased max-width for larger screens */
     width: 90%; /* Responsive width */
     margin: 20px auto; /* Center the container */
-    transition: background-color 0.3s; /* Smooth background color transition */
+    transition: background-color 0.3s, transform 0.5s; /* Smooth transitions */
+    position: relative; /* Required for absolute positioning of background */
+    overflow: hidden; /* Hide overflow to clip the moving background */
 }
+
+.container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: url('background.png') no-repeat center center fixed;
+    background-size: cover;
+    transition: transform 0.5s ease-out;
+    z-index: -1;
+}
+
+.container:hover::before {
+    transform: translate(
+        calc((100% - 600px) * ((100px - var(--mouse-y, 50px)) / 100)),
+        calc((100% - 600px) * ((100px - var(--mouse-x, 50px)) / 100))
+    );
+}
+
 
 .container:hover {
     background-color: rgba(0, 0, 0, 0.9); /* Darken background on hover */
 }
+
+
 
 h1 {
     color: #f0f0f0;

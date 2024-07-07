@@ -48,50 +48,60 @@ function renderTasks() {
 
     tasks.forEach((task, index) => {
         let li = document.createElement('li');
-        li.style.whiteSpace = 'normal'; // Ensures text wraps instead of truncating
-        li.style.display = 'flex'; // Use flexbox to align items in a row
-        li.style.alignItems = 'center'; // Center align items vertically
+        li.style.whiteSpace = 'normal';
+        li.style.display = 'flex';
+        li.style.alignItems = 'center';
+        li.style.marginBottom = '10px';
 
-        // Title
         let title = document.createElement('div');
         title.textContent = task.title;
         title.style.fontWeight = 'bold';
-        title.style.flex = '1'; // Allow title to take up remaining space
-        title.style.wordBreak = 'break-word'; // Allow word break to wrap long words
+        title.style.flex = '1';
+        title.style.wordBreak = 'break-word';
         li.appendChild(title);
 
-        // Description (if any)
         if (task.description) {
             let description = document.createElement('p');
             description.textContent = task.description;
-            description.style.flex = '1'; // Allow description to take up remaining space
-            description.style.wordBreak = 'break-word'; // Allow word break for descriptions
+            description.style.flex = '1';
+            description.style.wordBreak = 'break-word';
             li.appendChild(description);
         }
 
-        // Buttons container
         let buttonContainer = document.createElement('div');
+        buttonContainer.style.display = 'flex';
+        buttonContainer.style.alignItems = 'center';
+        buttonContainer.style.marginLeft = '10px';
 
-        // Complete button
         let completeButton = document.createElement('button');
         completeButton.textContent = task.is_completed ? 'Mark as Incomplete' : 'Mark as Complete';
-        completeButton.style.backgroundColor = task.is_completed ? '#28a745' : '#007BFF'; // Green for completed, blue for incomplete
+        completeButton.style.backgroundColor = task.is_completed ? '#28a745' : '#007BFF';
+        completeButton.style.minHeight = '30px';
+        completeButton.style.height = 'auto';
         completeButton.addEventListener('click', () => markAsComplete(task.id, index));
 
-        // Delete button
         let deleteButton = document.createElement('button');
-        deleteButton.innerHTML = '<img src="delete.png" alt="Delete">';
+        deleteButton.style.height = '30px';
+        deleteButton.style.marginLeft = '5px';
+        deleteButton.style.display = 'flex'; // Ensure flexbox is used for centering
+        deleteButton.style.alignItems = 'center'; // Center align items vertically
+
+        let deleteImage = document.createElement('img');
+        deleteImage.src = 'delete.png'; // Replace with your image source
+        deleteImage.alt = 'Delete';
+        deleteImage.style.height = '100%'; // Ensure the image takes up the full height of the button
+        deleteButton.appendChild(deleteImage);
+
         deleteButton.addEventListener('click', () => deleteTask(task.id, index));
-        
+
         buttonContainer.appendChild(completeButton);
         buttonContainer.appendChild(deleteButton);
-        buttonContainer.style.marginLeft = '10px'; // Add margin between buttons
         
         li.appendChild(buttonContainer);
         taskList.appendChild(li);
     });
 }
-
+    
 
 function fetchTasks() {
     fetch('/tasks')
